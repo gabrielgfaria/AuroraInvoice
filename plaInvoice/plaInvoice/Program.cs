@@ -59,11 +59,11 @@ namespace plaInvoice
 
             ////HTML string and Base URL 
             string htmlText = GetHtml(value, company);
-            string baseUrl = Path.GetFullPath("../../../Resources/");
+            string baseUrl = Path.GetFullPath(_configuration.GetValue<string>("resourcesPath"));
 
             ////Convert URL to PDF
             PdfDocument document = htmlConverter.Convert(htmlText, baseUrl);
-            FileStream fileStream = new FileStream(GetFileOutputPath(outputPath, company), FileMode.CreateNew, FileAccess.ReadWrite);
+            FileStream fileStream = new FileStream(@$"{GetFileOutputPath(outputPath, company)}", FileMode.CreateNew, FileAccess.ReadWrite);
             
             ////Save and close the PDF document.
             document.Save(fileStream);
@@ -88,7 +88,7 @@ namespace plaInvoice
 
         private static string GetHtml(decimal value, string company)
         {
-            var path = Path.GetFullPath("../../../Resources/invoiceTemplate.html");
+            var path = Path.GetFullPath(_configuration.GetValue<string>("templatePath"));
             var html = File.ReadAllText(path);
 
             html = html.Replace("KEY_COMPANY", company.ToUpper());
